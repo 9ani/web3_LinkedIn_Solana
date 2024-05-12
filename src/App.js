@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { WalletProvider } from '@solana/wallet-adapter-react';
+import { ConnectionProvider } from '@solana/wallet-adapter-react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import RegistrationPage from './components/RegistrationPage';
+import ConnectWalletPage from './components/ConnectWalletPage';
 
-function App() {
+
+const App = () => {
+  const network = WalletAdapterNetwork.Devnet;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ConnectionProvider endpoint="https://api.devnet.solana.com">
+        <WalletProvider wallets={[]} autoConnect>
+          <ConnectWalletPage /> 
+          <RegistrationPage />
+        </WalletProvider>
+      </ConnectionProvider>
     </div>
   );
-}
+};
 
 export default App;
