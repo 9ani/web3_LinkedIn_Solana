@@ -1,52 +1,45 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const FriendRequests = () => {
   const { publicKey } = useWallet();
-  const [friendPublicKey, setFriendPublicKey] = useState('');
-  const [friends, setFriends] = useState([]);
+  const [users, setUsers] = useState([]); // State to store all users
+  const navigate = useNavigate(); // Use useNavigate hook
 
   useEffect(() => {
-    if (publicKey) {
-      axios.get(`http://localhost:3000/api/users/${publicKey.toString()}`)
-        .then(response => setFriends(response.data.friends))
-        .catch(err => console.error(err));
-    }
-  }, [publicKey]);
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/users");
+        setUsers(response.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  const handleSendRequest = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post('http://localhost:3000/api/friends/request', {
-        fromPublicKey: publicKey.toString(),
-        toPublicKey: friendPublicKey,
-      });
-      setFriendPublicKey('');
-    } catch (err) {
-      console.error(err);
-    }
+    fetchUsers();
+  }, []);
+
+  const handleUserClick = (userPublicKey) => {
+    navigate(`/user/${userPublicKey}`);
   };
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-3xl mb-6">Friend Requests</h1>
-      <form onSubmit={handleSendRequest} className="space-y-4">
-        <input
-          type="text"
-          value={friendPublicKey}
-          onChange={(e) => setFriendPublicKey(e.target.value)}
-          placeholder="Friend's Public Key"
-          required
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Send Friend Request</button>
-      </form>
-      <h2 className="text-2xl mt-6">Your Friends</h2>
-      <ul>
-        {friends.map(friend => (
-          <li key={friend.publicKey} className="p-2 border-b border-gray-300">
-            {friend.name} ({friend.publicKey})
+      <h1 className="text-3xl mb-6">All Users</h1>
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {users.map((user) => (
+          <li
+            key={user.publicKey}
+            className="user-card cursor-pointer bg-white shadow-md rounded overflow-hidden transition duration-300 hover:shadow-lg"
+            onClick={() => handleUserClick(user.publicKey)}>
+            <div className="p-4">
+              <h3 className="text-lg font-medium mb-2">{user.name}</h3>
+              <p className="text-gray-500 truncate overflow-ellipsis overflow-hidden">
+                {user.publicKey.slice(0, 4)}...{user.publicKey.slice(-4)}
+              </p>
+            </div>
           </li>
         ))}
       </ul>
