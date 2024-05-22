@@ -25,6 +25,18 @@ const FriendRequests = () => {
     navigate(`/user/${userPublicKey}`);
   };
 
+  const handleAddFriend = async (fromPublicKey, toPublicKey) => {
+    try {
+      await axios.post("http://localhost:3000/api/friends/request", {
+        fromPublicKey,
+        toPublicKey,
+      });
+      console.log("Friend request sent!");
+    } catch (err) {
+      console.error("Error sending friend request:", err);
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto mt-10">
       <h1 className="text-3xl mb-6">All Users</h1>
@@ -32,13 +44,21 @@ const FriendRequests = () => {
         {users.map((user) => (
           <li
             key={user.publicKey}
-            className="user-card cursor-pointer bg-white shadow-md rounded overflow-hidden transition duration-300 hover:shadow-lg"
-            onClick={() => handleUserClick(user.publicKey)}>
-            <div className="p-4">
-              <h3 className="text-lg font-medium mb-2">{user.name}</h3>
-              <p className="text-gray-500 truncate overflow-ellipsis overflow-hidden">
-                {user.publicKey.slice(0, 4)}...{user.publicKey.slice(-4)}
-              </p>
+            className="user-card cursor-pointer bg-white shadow-md rounded overflow-hidden transition duration-300 hover:shadow-lg px-4 py-6" // Increased padding
+          >
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="text-lg font-medium mb-2">{user.name}</h3>
+                <p className="text-gray-500 truncate overflow-ellipsis overflow-hidden">
+                  {user.publicKey.slice(0, 4)}...{user.publicKey.slice(-4)}
+                </p>
+              </div>
+              <button
+                className="btn-primary px-4 py-2 rounded text-black font-medium disabled:opacity-50 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-300" // Added transition classes
+                disabled={user.publicKey.toString() === publicKey.toString()}
+                onClick={() => handleAddFriend(publicKey, user.publicKey)}>
+                Add Friend
+              </button>
             </div>
           </li>
         ))}
