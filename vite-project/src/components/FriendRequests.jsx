@@ -54,7 +54,7 @@ const FriendRequests = () => {
                 </p>
               </div>
               <button
-                className="btn-primary px-4 py-2 rounded text-black font-medium disabled:opacity-50 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-300" // Added transition classes
+                className="btn-primary px-4 py-2 rounded text-black font-medium disabled:opacity-50 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-300" // Added transition classes
                 disabled={user.publicKey.toString() === publicKey.toString()}
                 onClick={() => handleAddFriend(publicKey, user.publicKey)}>
                 Add Friend

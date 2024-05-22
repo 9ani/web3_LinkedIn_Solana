@@ -7,7 +7,7 @@ const WalletConnect = () => {
 
   useEffect(() => {
     if (publicKey) {
-      console.log(`Wallet connected: ${publicKey.toString()}`);
+      alert(`Wallet connected: ${publicKey.toString()}`);
     }
   }, [publicKey]);
 
